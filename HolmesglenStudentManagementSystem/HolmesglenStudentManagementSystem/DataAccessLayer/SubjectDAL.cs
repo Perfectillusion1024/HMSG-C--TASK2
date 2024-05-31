@@ -9,43 +9,74 @@ using System.Threading.Tasks;
 namespace HolmesglenStudentManagementSystem.DataAccessLayer
 {
     public class SubjectDAL
-    {        
-        private SqliteConnection Connection;
+    {
+        private SQLiteConnection _connection;
 
-        public SubjectDAL(SqliteConnection connection)
+        public SubjectDAL(string connectionString)
         {
-            // connect to the target database
-            Connection = connection;
-        }
-        // create
-        public void Create(Subject subject)
-        {
-
+            _connection = new SQLiteConnection(connectionString);
         }
 
-        public Subject Read(string id)
+        public void CreateSubject(Subject subject)
         {
-            Subject subject = null;
-            
-            return subject;
+            string query = "INSERT INTO Subject (Title) VALUES (@Title)";
+            using (var command = new SQLiteCommand(query, _connection))
+            {
+                command.Parameters.AddWithValue("@Title", subject.Title);
+                _connection.Open();
+                command.ExecuteNonQuery();
+                _connection.Close();
+            }
         }
 
-        // read all
-        public List<Subject> ReadAll()
+        public Subject GetSubject(int subjectId)
         {
-            var subjects = new List<Subject>();
-
-            return subjects;
+            string query = "SELECT * FROM Subject WHERE SubjectID = @SubjectID";
+            using (var command = new SQLiteCommand(query, _connection))
+            {
+                command.Parameters.AddWithValue("@SubjectID", subjectId);
+                _connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var subject = new Subject
+                        {
+                            SubjectID = reader.GetInt32(0),
+                            Title = reader.GetString(1)
+                        };
+                        _connection.Close();
+                        return subject;
+                    }
+                }
+                _connection.Close();
+            }
+            return null;
         }
 
-        public void Update(Subject subject)
+        public void UpdateSubject(Subject subject)
         {
-            
+            string query = "UPDATE Subject SET Title = @Title WHERE SubjectID = @SubjectID";
+            using (var command = new SQLiteCommand(query, _connection))
+            {
+                command.Parameters.AddWithValue("@Title", subject.Title);
+                command.Parameters.AddWithValue("@SubjectID", subject.SubjectID);
+                _connection.Open();
+                command.ExecuteNonQuery();
+                _connection.Close();
+            }
         }
 
-        public void Delete(string id)
+        public void DeleteSubject(int subjectId)
         {
-            
+            string query = "DELETE FROM Subject WHERE SubjectID = @SubjectID";
+            using (var command = new SQLiteCommand(query, _connection))
+            {
+                command.Parameters.AddWithValue("@SubjectID", subjectId);
+                _connection.Open();
+                command.ExecuteNonQuery();
+                _connection.Close();
+            }
         }
     }
 }

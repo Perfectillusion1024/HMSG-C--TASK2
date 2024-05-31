@@ -5,6 +5,7 @@ namespace HolmesglenStudentManagementSystem.DataAccessLayer
     {
         // student todo -
         // correctly define the connection string for the target database
-        public static string ConnectionString = @"Data Source=C:\HolmesglenStudentManagementSystem.db";
+        public static string ConnectionString = @"Data Source=/Users/wiley/Library/CloudStorage/OneDrive-HolmesglenInstitute/C#/AssessmentTask2/Project/HMSG-C--TASK2/HolmesglenStudentManagementSystem/HolmesglenStudentManagementSystem.db";
     }
+
 }
